@@ -1,4 +1,3 @@
-import postgres from 'postgres';
 import {
   CustomerField,
   CustomersTableType,
@@ -9,8 +8,8 @@ import {
 } from './definitions';
 import { formatCurrency } from './utils';
 
-const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require' });
-
+import { neon } from '@neondatabase/serverless';
+const sql = neon(process.env.POSTGRES_URL!);
 export async function fetchRevenue() {
   try {
     // Artificially delay a response for demo purposes.
@@ -19,7 +18,7 @@ export async function fetchRevenue() {
     // console.log('Fetching revenue data...');
     // await new Promise((resolve) => setTimeout(resolve, 3000));
 
-    const data = await sql<Revenue[]>`SELECT * FROM revenue`;
+    const data = await sql`SELECT * FROM revenue`;
 
     // console.log('Data fetch completed after 3 seconds.');
 
