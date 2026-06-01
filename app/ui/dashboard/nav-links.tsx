@@ -25,8 +25,6 @@ export default function NavLinks() {
 let currentPath=usePathname();
 
 
-console.log(currentPath);
-
   return (
     <>
       {links.map((link) => {
