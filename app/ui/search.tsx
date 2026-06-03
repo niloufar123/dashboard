@@ -44,3 +44,4 @@ export default function Search({ placeholder }: { placeholder: string }) {
     </div>
   );
 }
+ 
