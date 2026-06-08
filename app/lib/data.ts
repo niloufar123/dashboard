@@ -1,4 +1,3 @@
-import postgres from 'postgres';
 import {
   CustomerField,
   CustomersTableType,
@@ -9,20 +8,21 @@ import {
 } from './definitions';
 import { formatCurrency } from './utils';
 
-const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require' });
+import { neon } from '@neondatabase/serverless';
 
+const sql = neon(process.env.POSTGRES_URL!);
 export async function fetchRevenue() {
   try {
     // Artificially delay a response for demo purposes.
     // Don't do this in production :)
 
-    // console.log('Fetching revenue data...');
-    // await new Promise((resolve) => setTimeout(resolve, 3000));
+    console.log('the first one Fetching revenue data...');
+    await new Promise((resolve) => setTimeout(resolve, 5000));
 
-    const data = await sql<Revenue[]>`SELECT * FROM revenue`;
+    const data = await sql`SELECT * FROM revenue`;
 
-    // console.log('Data fetch completed after 3 seconds.');
-
+    console.log('Data fetch completed after 3 seconds.');
+    console.log('the first one Data:', data);
     return data;
   } catch (error) {
     console.error('Database Error:', error);
@@ -32,12 +32,17 @@ export async function fetchRevenue() {
 
 export async function fetchLatestInvoices() {
   try {
+    // Artificial delay added for demo purposes.
+    await new Promise((resolve) => setTimeout(resolve, 5000));
+
     const data = await sql<LatestInvoiceRaw[]>`
       SELECT invoices.amount, customers.name, customers.image_url, customers.email, invoices.id
       FROM invoices
       JOIN customers ON invoices.customer_id = customers.id
       ORDER BY invoices.date DESC
-      LIMIT 5`;
+      LIMIT 7`;
+
+    console.log("data", data);
 
     const latestInvoices = data.map((invoice) => ({
       ...invoice,
@@ -85,7 +90,7 @@ export async function fetchCardData() {
   }
 }
 
-const ITEMS_PER_PAGE = 6;
+const ITEMS_PER_PAGE = 8;
 export async function fetchFilteredInvoices(
   query: string,
   currentPage: number,
