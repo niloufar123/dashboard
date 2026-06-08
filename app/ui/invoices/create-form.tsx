@@ -127,7 +127,7 @@ export default function Form({ customers }: { customers: CustomerField[] }) {
           Cancel
         </Link>
         {pending ? (
-          <Button disabled>Creating...</Button>
+          <Button aria-label='' disabled>Creating...</Button>
         ) : (
           <Button type="submit">Create Invoice</Button>
         )}

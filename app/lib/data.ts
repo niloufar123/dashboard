@@ -1,3 +1,4 @@
+import { cacheLife } from 'next/cache';
 import {
   CustomerField,
   CustomersTableType,
@@ -120,20 +121,21 @@ export async function fetchFilteredInvoices(
     `;
 
     return invoices;
-  } catch (error) {
-    console.error('Database Error:', error);
+  } catch (error) {        
     throw new Error('Failed to fetch invoices.');
   }
 }
 
 export async function fetchInvoicesPages(query: string) {
+  'use cache';
+  cacheLife('hours');
   try {
     const data = await sql`SELECT COUNT(*)
     FROM invoices
     JOIN customers ON invoices.customer_id = customers.id
     WHERE
       customers.name ILIKE ${`%${query}%`} OR
-      customers.email ILIKE ${`%${query}%`} OR
+      customers.email ILIKE ${`%${query}%`} OR 
       invoices.amount::text ILIKE ${`%${query}%`} OR
       invoices.date::text ILIKE ${`%${query}%`} OR
       invoices.status ILIKE ${`%${query}%`}
