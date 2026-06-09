@@ -6,20 +6,20 @@ import { lusitana } from '@/app/ui/fonts';
 import { InvoicesTableSkeleton } from '@/app/ui/skeletons';
 import { Suspense } from 'react';
 import { fetchInvoicesPages } from '@/app/lib/data';
- 
-export default async function Page(props:{
-    searchParams?:Promise<{
-        query?: string;
-        page?: string;
-    }>;
-    
+
+export default async function Page(props: {
+  searchParams?: Promise<{
+    query?: string;
+    page?: string;
+  }>;
+
 }) {
 
-    const searchParams=await props.searchParams;
-    const query=searchParams?.query|| '';
-    const currentPage=searchParams?.page? parseInt(searchParams.page.toString()):1;
+  const searchParams = await props.searchParams;
+  const query = searchParams?.query || '';
+  const currentPage = searchParams?.page ? parseInt(searchParams.page.toString()) : 1;
 
-    const totalPages=await fetchInvoicesPages(query);
+  const totalPages = await fetchInvoicesPages(query);
 
   return (
     <div className="w-full">
@@ -27,14 +27,20 @@ export default async function Page(props:{
         <h1 className={`${lusitana.className} text-2xl`}>Invoices</h1>
       </div>
       <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
-        <Search placeholder="Search invoices..." />
+        <Suspense fallback={null}>  {/* fallback={null} = no visible skeleton for a simple input */}
+          <Search placeholder="Search invoices..." />
+        </Suspense>
         <CreateInvoice />
       </div>
-       <Suspense key={query + currentPage} fallback={<InvoicesTableSkeleton />}>
+      <Suspense key={query + currentPage} fallback={<InvoicesTableSkeleton />}>
         <Table query={query} currentPage={currentPage} />
       </Suspense>
       <div className="mt-5 flex w-full justify-center">
-        <Pagination totalPages={totalPages} />
+        <Suspense fallback={null}>  {/* fallback={null} = no visible skeleton for a simple input */}
+
+          <Pagination totalPages={totalPages} />
+        </Suspense>
+
       </div>
     </div>
   );
